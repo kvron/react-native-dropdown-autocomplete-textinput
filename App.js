@@ -5,7 +5,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import Autocomplete from 'react-native-dropdown-autocomplete-textinput';
+import Autocomplete from './src/autoComplete/Autocomplete';
 console.disableYellowBox = true;
 export default class App extends Component {
   constructor(props) {
@@ -22,7 +22,8 @@ export default class App extends Component {
           onKeyboardDidShow={() => this.setState({scroll: false})}
           onKeyboardDidHide={() => this.setState({scroll: true})}
           scrollEnabled={this.state.scroll}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          >
           <KeyboardAvoidingView>
             <Autocomplete
               data={DATA}
@@ -37,6 +38,7 @@ export default class App extends Component {
               displayKey="name"
               placeholder={'Placeholder2'}
               isMandatory={true}
+              value={{code: 'AP', name: 'Andhra Pradesh'}}
               onSelect={value => console.warn('value', value)}
             />
             <View style={{marginTop: 200}}></View>

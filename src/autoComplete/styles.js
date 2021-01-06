@@ -28,6 +28,16 @@ export const styles = StyleSheet.create({
   suggestionItem: {
     color: 'black',
   },
+  emptyResult: {
+    backgroundColor: 'white',
+    paddingLeft: 7,
+    paddingRight: 7,
+    paddingTop: 14,
+    paddingBottom: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    width: '100%',
+  },
 }),
 defaultAccentColor = '#034EA2',
 heightTopThreshold = 70,

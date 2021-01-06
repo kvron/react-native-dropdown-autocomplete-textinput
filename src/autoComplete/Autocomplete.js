@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   FlatList,
@@ -28,12 +28,12 @@ const AutoComplete = props => {
     isMandatory,
     value,
     placeholder,
-    placeholderColor = defaultAccentColor,
     maxHeight,
     floatBottom,
     editable = true,
     dropDownIconColor = defaultAccentColor,
     dropDownImage = defaultDropDownImage,
+    emptyResultMsg = "Empty"
   } = props;
 
   const [filteredData, setFilteredData] = useState([]);
@@ -54,6 +54,7 @@ const AutoComplete = props => {
           e[displayKey] &&
           e[displayKey].toUpperCase().includes(str.toUpperCase()),
       );
+    console.log("filterData", fData);
     setFilteredData(fData);
   };
 
@@ -64,15 +65,7 @@ const AutoComplete = props => {
   }, [data]);
 
   useEffect(() => {
-    if (!value || (Object.keys(value).length !== 0 && value !== selectedItem)) {
-      setSelectedItem(value);
-    }
-  }, [value]);
-
-  useEffect(() => {
-    filteredData &&
-      filteredData.length > 0 &&
-      setMData(filteredData.slice(0, 10 * page));
+    setMData(filteredData.slice(0, 10 * page));
   }, [filteredData, page]);
 
   const _handleLoadMore = () => {
@@ -107,7 +100,7 @@ const AutoComplete = props => {
 
   const displaySuggestions = str => {
     newRef.current.measure((fx, fy, width, height, px, py) => {
-      let elementHeight = height;
+      let elementHeight = height + 20;
       let elementPosition = py;
 
       let spaceAboveElement = elementPosition;
@@ -121,7 +114,7 @@ const AutoComplete = props => {
       if (
         !floatBottom &&
         spaceAboveElement - heightTopThreshold >
-          spaceBelowElement - heightBottomThreshold
+        spaceBelowElement - heightBottomThreshold
       ) {
         sugestionsListPos.current = {
           bottom: elementHeight,
@@ -136,23 +129,18 @@ const AutoComplete = props => {
     });
   };
   return (
-    <View style={[{width: '100%'}, textInputStyle]}>
-      <Text
-        style={{
-          marginBottom: '-2%',
-          marginLeft: '0.7%',
-          color: placeholderColor,
-        }}>
+    <View style={[{ width: '100%' }, textInputStyle]}>
+      <Text style={{ fontWeight: '700', marginBottom: 10 }}>
         {placeholder}
         {isMandatory && (
-          <Text title style={{color: 'red'}}>
+          <Text title style={{ color: 'red' }}>
             {' '}
             *
           </Text>
         )}
       </Text>
 
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         <TextInput
           ref={newRef}
           {...props}
@@ -162,8 +150,8 @@ const AutoComplete = props => {
             width: '100%',
             paddingRight: 12,
             color: !editable ? '#6c6c6c' : '#4B5258',
-            borderBottomWidth: Platform.OS === 'ios' ? 1 : 0,
-            borderBottomColor: '#C7C1CB',
+            borderWidth: 1,
+            borderColor: '#C7C1CB',
             marginTop: Platform.OS === 'ios' ? "3%" : 0,
           }}
           value={
@@ -176,9 +164,11 @@ const AutoComplete = props => {
           onChangeText={data => filterData(data)}
           multiline={selectedItem ? true : false}
           onFocus={handleOnFocus}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => {
+            setIsFocused(false);
+            setShowSuggestions(false);
+          }}
           clearTextOnFocus="true"
-          underlineColorAndroid={isFocused ? defaultAccentColor : '#C7C1CB'}
         />
 
         <Image
@@ -202,8 +192,15 @@ const AutoComplete = props => {
             onEndReached={_handleLoadMore}
             onEndReachedThreshold={0.5}
             data={mData}
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={() => handleSelection(item)}>
+            ListEmptyComponent={
+              <View style={[styles.emptyResult]}>
+                <Text caps style={[styles.suggestionItem]} numberOfLines={1}>
+                  {emptyResultMsg}
+                </Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleSelection(item)} style={{ width: "100%" }}>
                 <View style={[styles.suggestionElementView]}>
                   <Text caps style={[styles.suggestionItem]} numberOfLines={1}>
                     {item[displayKey]}
