@@ -168,7 +168,7 @@ const AutoComplete = props => {
             setIsFocused(false);
             setShowSuggestions(false);
           }}
-          clearTextOnFocus="true"
+          clearTextOnFocus=true
         />
 
         <Image
